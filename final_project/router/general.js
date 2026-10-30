@@ -162,4 +162,36 @@ public_users.get('/async-author/:author', async function (req, res) {
     }
 });
 
+// TASK 13: Get book details based on Title using async-await or Promises with Axios
+public_users.get('/async-title/:title', async function (req, res) {
+    try {
+        // STEP 1: Grab the title from the URL parameters
+        const requestedTitle = req.params.title;
+
+        // STEP 2: Create a Promise to filter books by title asynchronously
+        const getBooksByTitle = new Promise((resolve, reject) => {
+            let matchingBooks = [];
+            const bookKeys = Object.keys(books);
+
+            bookKeys.forEach((isbnKey) => {
+                if (books[isbnKey].title === requestedTitle) {
+                    matchingBooks.push(books[isbnKey]);
+                }
+            });
+
+            if (matchingBooks.length > 0) {
+                resolve(matchingBooks);
+            } else {
+                reject(new Error("No books found with this title"));
+            }
+        });
+
+        // STEP 3: Await the promise resolution
+        const booksFound = await getBooksByTitle;
+        return res.status(200).json(booksFound);
+    } catch (error) {
+        return res.status(404).json({ message: error.message });
+    }
+});
+
 module.exports.general = public_users;
