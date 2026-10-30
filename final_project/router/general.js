@@ -107,4 +107,27 @@ public_users.get('/async-books', async function (req, res) {
     }
 });
 
+// TASK 11: Get book details based on ISBN using async-await or Promises with Axios
+public_users.get('/async-isbn/:isbn', async function (req, res) {
+    try {
+        // STEP 1: Grab the ISBN from the URL parameters
+        const isbn = req.params.isbn;
+
+        // STEP 2: Create a Promise to retrieve the book by ISBN asynchronously
+        const getBookByIsbn = new Promise((resolve, reject) => {
+            if (books[isbn]) {
+                resolve(books[isbn]);
+            } else {
+                reject(new Error("Book not found"));
+            }
+        });
+
+        // STEP 3: Await the promise resolution
+        const bookDetails = await getBookByIsbn;
+        return res.status(200).json(bookDetails);
+    } catch (error) {
+        return res.status(404).json({ message: error.message });
+    }
+});
+
 module.exports.general = public_users;
